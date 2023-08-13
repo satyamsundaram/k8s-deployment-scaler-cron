@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: scaledown-cronjob
+spec:
+  schedule: "30 11 * * *"  # Runs every day at 11:30 AM UTC
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: deployment-scaler
+          containers:
+          - name: scaledown-container
+            image: satyamsundaram01/scaler_script  # Replace with your custom Docker image
+            command: ["python3", "/app/scaler.py", "nginx-deployment", "1", "default"]
+          restartPolicy: OnFailure
